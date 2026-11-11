@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Summarizer</title>
+    <style>
+        /* --- Global Reset & System Typography --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* --- Page Background --- */
+body {
+    min-height: 100vh;
+    background: radial-gradient(circle at top right, #e2e8f0, #cbd5e1 40%, #94a3b8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: clamp(1rem, 4vw, 2.5rem);
+    color: #0f172a;
+}
+
+/* --- Main Card Container with Subtle Hover Lift --- */
+.container {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 650px;
+    padding: clamp(1.5rem, 5vw, 2.5rem);
+    border-radius: 16px;
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 
+                0 8px 10px -6px rgba(15, 23, 42, 0.04);
+    border: 1px solid #e2e8f0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.container:hover {
+    box-shadow: 0 20px 30px -10px rgba(15, 23, 42, 0.12);
+}
+
+/* --- Typography --- */
+h1 {
+    font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+    font-weight: 800;
+    text-align: center;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+}
+
+/* Styled Subtitle as an AI Pill Badge */
+h3 {
+    display: table;
+    margin: 0 auto 0.75rem auto;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #4f46e5;
+    background-color: #eef2ff;
+    padding: 0.35rem 0.85rem;
+    border-radius: 50px;
+    border: 1px solid #e0e7ff;
+}
+
+p {
+    text-align: center;
+    color: #64748b;
+    font-size: clamp(0.88rem, 2vw, 0.95rem);
+    margin-bottom: 1.5rem;
+}
+
+/* --- Form & Textarea --- */
+#summarization-form {
+    display: flex;
+    flex-direction: column;
+}
+
+#dialogue-input {
+    width: 100%;
+    min-height: 150px;
+    padding: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #1e293b;
+    background-color: #f8fafc;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 12px;
+    resize: vertical;
+    outline: none;
+    transition: all 0.25s ease-in-out;
+}
+
+/* Textarea Hover & Focus */
+#dialogue-input:hover {
+    border-color: #94a3b8;
+    background-color: #ffffff;
+}
+
+#dialogue-input:focus {
+    background-color: #ffffff;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.18);
+}
+
+#dialogue-input::placeholder {
+    color: #94a3b8;
+}
+
+/* --- Action Button with Micro-interactions --- */
+button[type="submit"] {
+    margin-top: 1rem;
+    width: 100%;
+    background-color: #4f46e5;
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.85rem 1.5rem;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+    transition: all 0.2s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #4338ca;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(79, 70, 229, 0.35);
+}
+
+button[type="submit"]:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(79, 70, 229, 0.2);
+}
+
+/* --- Output Section with Modern Accent Border --- */
+.summary-output {
+    margin-top: 1.75rem;
+    padding: 1.25rem;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #4f46e5;
+    border-radius: 8px;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.summary-output:hover {
+    background-color: #f1f5f9;
+    border-color: #cbd5e1;
+    border-left-color: #4338ca;
+}
+
+#summary-heading {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1e293b;
+    text-align: left;
+    margin: 0 0 0.5rem 0;
+    padding: 0;
+    background: none;
+    border: none;
+}
+
+#summary-text {
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: #334155;
+    text-align: left;
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* --- Mobile Responsiveness --- */
+@media (max-width: 480px) {
+    body {
+        padding: 0.75rem;
+    }
+
+    .container {
+        padding: 1.25rem;
+        border-radius: 12px;
+    }
+
+    #dialogue-input {
+        min-height: 120px;
+        font-size: 0.9rem;
+    }
+
+    button[type="submit"] {
+        padding: 0.75rem;
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Text Summarizer</h1>
+        <h3>Using huggingface Transformer</h3>
+        <p>Write or paste the content for quicker summarization</p>
+
+        <form id="summarization-form">
+            <textarea id="dialogue-input" placeholder="Enter your content here..." required></textarea>
+            <button type="submit">Summarize</button>
+        </form>
+
+        <div class="summary-output">
+            <h3 id="summary-heading">Content Summary</h3>
+            <p id="summary-text"></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("summarization-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            // Get references to elements
+            const dialogueInput = document.getElementById("dialogue-input");
+            const summaryText = document.getElementById("summary-text")
+            const submitButton = e.target.querySelector("button");
+
+            const dialogue = dialogueInput.value.trim();
+            if (!dialogue) return;
+
+            // show processing message and disable button
+            summaryText.innerText = "Processing......";
+            submitButton.disabled = true;
+
+            try {
+                // send dialogue to backend
+                const response = await fetch("/summarize/", {
+                    method:"POST",
+                    headers: { "Content-Type":"application/json"},
+                    body: JSON.stringify({dialogue}),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                summaryText.innerText = data.summary || "No summary returned.";
+            } catch(err) {
+                // show any error messages
+                summaryText.innerText = `Error: $(err.message)`;
+            } finally {
+                // Re-enable the button
+                submitButton.disabled=false;
+            }
+        });
+    </script>
+</body>
+</html>
